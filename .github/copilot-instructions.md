@@ -10,6 +10,8 @@ Este proyecto es un juego de ajedrez online con el siguiente stack:
 - Sigue buenas prácticas de estructura, modularidad y reutilización de código.
 - Utiliza Prettier y ESLint para formateo y linting.
 - Escribe tests unitarios e integrados para la lógica crítica.
+- Usa Docker para el frontend y backend, asegurando que ambos se comuniquen correctamente.
+- Tanto el frontend como el backend deben ser capaces de ejecutarse de forma independiente y en contenedores separados.
 
 ## Frontend (React)
 - Usa componentes funcionales y hooks de React.
@@ -19,6 +21,12 @@ Este proyecto es un juego de ajedrez online con el siguiente stack:
 - Muestra información de jugadores, historial de movimientos y estado de la partida.
 - Asegura diseño responsivo para escritorio y móvil.
 - Las imagenes de las piezas y tablero estan en `frontend/src/assets/` y deben ser usadas desde ahí.
+- Las paginas para react-router se guardan en `frontend/src/pages/` y deben ser usadas desde ahí.
+- Usa `frontend/src/components/` para componentes reutilizables.
+- Usa `frontend/src/hooks/` para hooks reutilizables.
+- Usa `frontend/src/utils/` para funciones utilitarias.
+- Usa `frontend/src/types/` para tipos de TypeScript.
+- Usa `frontend/src/services/` para servicios de API y WebSocket.
 
 ## Backend (NestJS)
 - Usa módulos, controladores y servicios de NestJS para una arquitectura limpia.

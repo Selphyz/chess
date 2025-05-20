@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USER=nestjsuser
+      - DATABASE_PASSWORD=nestjspassword
+      - DATABASE_NAME=nestjsdb
+    depends_on:
+      - postgres
+    networks:
+      - backend-network
+
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: nestjsuser
+      POSTGRES_PASSWORD: nestjspassword
+      POSTGRES_DB: nestjsdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - backend-network
+
+volumes:
+  pgdata:
+
+networks:
+  backend-network:
+    driver: bridge
