@@ -7,6 +7,10 @@ async function bootstrap() {
 
   app.useGlobalPipes(new (await import('@nestjs/common')).ValidationPipe());
 
+  // Import the global exception filter
+  const { HttpExceptionFilter } = await import('./common/filters/http-exception.filter');
+  app.useGlobalFilters(new HttpExceptionFilter());
+
   const config = new DocumentBuilder()
     .setTitle('Chess API')
     .setDescription('API documentation for the Chess backend')
