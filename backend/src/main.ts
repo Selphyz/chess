@@ -5,6 +5,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.useGlobalPipes(new (await import('@nestjs/common')).ValidationPipe());
+
   const config = new DocumentBuilder()
     .setTitle('Chess API')
     .setDescription('API documentation for the Chess backend')
