@@ -1,9 +1,9 @@
 import { Board } from '../../src/utils/board';
 import { validateMove as originalValidateMove } from '../../src/utils/movement';
-import type { Position, Piece, PieceType } from '../../src/types/types';
-import type { ChessEvent } from '../../src/types/events';
+import type { Position, Piece } from '../../src/types/types';
 
-jest.mock('./movement');
+jest.mock('../../src/utils/movement');
+
 
 const mockedValidateMove = jest.mocked(originalValidateMove);
 

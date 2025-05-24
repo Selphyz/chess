@@ -5,6 +5,9 @@ import type { PieceMoveEvent, CastlingEvent } from '../types/events';
  * Utility to convert file character to number (a=1, b=2, ..., h=8)
  */
 export function fileToNumber(file: string): number {
+  if(file.length > 2 || file.length < 1) {
+    throw new Error("Invalid file character: " + file);    
+  }
   return file.charCodeAt(0) - 'a'.charCodeAt(0) + 1;
 }
 
