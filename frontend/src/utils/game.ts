@@ -1,6 +1,6 @@
 import { Board } from './board';
-import type { Position, Piece } from './types';
-import type { ChessEvent } from './events';
+import type { Position, Piece } from '../types/types';
+import type { ChessEvent } from '../types/events';
 import { validateMove } from './movement';
 
 export class Game {

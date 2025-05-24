@@ -1,6 +1,6 @@
 import { validateMove } from './movement';
-import type { Position, Piece, PieceColor, PieceType } from './types';
-import type { ChessEvent } from './events';
+import type { Position, Piece, PieceType } from '../types/types';
+import type { ChessEvent } from '../types/events';
 
 /**
  * Board representation for the chess game

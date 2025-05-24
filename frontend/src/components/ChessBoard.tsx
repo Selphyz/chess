@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-// Import piece SVGs
 import bishopB from '../assets/bishop-b.svg';
 import bishopW from '../assets/bishop-w.svg';
 import kingB from '../assets/king-b.svg';

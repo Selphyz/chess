@@ -1,10 +1,10 @@
-import type { Position, Piece, PieceColor, PieceType } from './types';
-import type { PieceMoveEvent, CastlingEvent } from './events';
+import type { Position, Piece } from '../types/types';
+import type { PieceMoveEvent, CastlingEvent } from '../types/events';
 
 /**
  * Utility to convert file character to number (a=1, b=2, ..., h=8)
  */
-function fileToNumber(file: string): number {
+export function fileToNumber(file: string): number {
   return file.charCodeAt(0) - 'a'.charCodeAt(0) + 1;
 }
 
@@ -296,3 +296,4 @@ export function validateMove(
 
   return { valid: true, event };
 }
+export * as default from './movement';
