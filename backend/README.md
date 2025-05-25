@@ -96,3 +96,131 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## WebSocket API: Chess Game Interaction
+
+This backend exposes a WebSocket API (using Socket.IO) for real-time chess game interaction between authenticated users.
+
+### Connecting to the WebSocket Server
+
+- **URL:**  
+  The WebSocket server is available at the same host as the backend, using the default Socket.IO path (`/socket.io`).  
+  Example: `ws://<backend-host>:<port>/socket.io/` (for local development, typically `ws://localhost:3000/socket.io/`).
+
+- **Authentication (JWT Required):**  
+  All WebSocket connections require a valid JWT. If authentication fails, the connection is immediately closed.
+  - **How to provide the JWT:**  
+    - **Preferred:** Set the `Authorization` header as `Bearer <token>`.
+    - **Alternative:** Pass the token as a `token` query parameter in the connection URL.
+
+  **Example (using Socket.IO client in JavaScript):**
+  ```js
+  import { io } from "socket.io-client";
+  const socket = io("http://localhost:3000", {
+    extraHeaders: {
+      Authorization: "Bearer <your-jwt-token>"
+    }
+    // OR, as a query param:
+    // query: { token: "<your-jwt-token>" }
+  });
+  ```
+
+### Events
+
+#### 1. `joinGame`
+- **Client emits:**  
+  ```json
+  { "gameId": "string" }
+  ```
+- **Behavior:**  
+  - Joins the user to the specified game room.
+  - Only two unique users are allowed per game. If a third user attempts to join, an error is returned.
+- **Server emits to room:**  
+  - `playerJoined`
+    ```json
+    {
+      "userId": "string",
+      "username": "string",
+      "players": ["userId1", "userId2"]
+    }
+    ```
+- **Errors:**  
+  - If the room is full:  
+    ```json
+    { "message": "Game room full" }
+    ```
+  - If the request is invalid:  
+    ```json
+    { "message": "Invalid join request" }
+    ```
+
+#### 2. `move`
+- **Client emits:**  
+  ```json
+  { "gameId": "string", "move": { /* move data */ } }
+  ```
+- **Behavior:**  
+  - Only users who have joined the game room can send moves.
+  - The move is broadcast to the other user in the room.
+- **Server emits to other user:**  
+  - `move`
+    ```json
+    {
+      "userId": "string",
+      "move": { /* move data */ }
+    }
+    ```
+- **Errors:**  
+  - If not a participant in the game:  
+    ```json
+    { "message": "Not a participant in this game" }
+    ```
+  - If the request is invalid:  
+    ```json
+    { "message": "Invalid move data" }
+    ```
+
+#### 3. Disconnection and Room Events
+- When a user disconnects, the server emits to the room:
+  - `playerLeft`
+    ```json
+    { "userId": "string" }
+    ```
+
+### Error Handling & Edge Cases
+
+- **Authentication Failure:**  
+  If a user connects without a valid JWT, the server disconnects the client immediately.
+- **Room Full:**  
+  Only two users can join a game room. A third user attempting to join receives an error and is not added.
+- **Not a Participant:**  
+  Users not in a game room cannot send moves to that room.
+- **Invalid Payloads:**  
+  Any event with missing or malformed data results in an `error` event with a descriptive message.
+- **Disconnection:**  
+  When a user disconnects, they are removed from the game room, and the remaining user is notified via `playerLeft`.
+
+### Example Usage
+
+**Joining a game:**
+```js
+socket.emit("joinGame", { gameId: "abc123" });
+```
+
+**Sending a move:**
+```js
+socket.emit("move", { gameId: "abc123", move: { from: "e2", to: "e4" } });
+```
+
+**Handling events:**
+```js
+socket.on("playerJoined", (data) => { /* ... */ });
+socket.on("move", (data) => { /* ... */ });
+socket.on("playerLeft", (data) => { /* ... */ });
+socket.on("error", (err) => { /* ... */ });
+```
+
+### Notes
+
+- All events and responses are in JSON format.
+- The JWT secret is configured in the backend environment.
+- This API is intended for use by authenticated frontend clients or API consumers.

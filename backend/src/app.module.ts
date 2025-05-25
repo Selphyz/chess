@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { User } from './user/user.entity';
 import { AuthModule } from './auth/auth.module';
+import { GameGateway } from './game.gateway';
 
 @Module({
   imports: [
@@ -25,6 +26,6 @@ import { AuthModule } from './auth/auth.module';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, GameGateway],
 })
 export class AppModule {}
