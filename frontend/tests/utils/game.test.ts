@@ -6,6 +6,9 @@ import { validateMove } from '../../src/utils/movement';
 jest.mock('../../src/utils/board');
 jest.mock('../../src/utils/movement');
 
+// Store the event callback when Board is instantiated
+let capturedEventCallback: Function;
+
 const mockBoardInstance = {
   getPiece: jest.fn(),
   movePiece: jest.fn(),
@@ -14,6 +17,7 @@ const mockBoardInstance = {
 };
 
 (Board as jest.Mock).mockImplementation(function (this: any, eventCallback: any) {
+  capturedEventCallback = eventCallback; // Capture the callback for use in tests
   Object.assign(this, mockBoardInstance);
   this.eventCallback = eventCallback;
   this.getPiece = mockBoardInstance.getPiece;
@@ -39,7 +43,19 @@ describe('Game', () => {
     mockBoardInstance.getPiece.mockImplementation((pos: Position) =>
       pos.file === 'e' && pos.rank === 2 ? piece : null
     );
-    mockBoardInstance.movePiece.mockImplementation(() => true);
+    mockBoardInstance.movePiece.mockImplementation((startPos, endPos) => {
+      // This simulates what the real Board class would do:
+      // When a move is successful, it should trigger the event callback
+      const mockEvent = {
+        type: 'move',
+        piece,
+        from: startPos,
+        to: endPos
+      };
+      // Call the event callback that was captured during Board construction
+      capturedEventCallback(mockEvent);
+      return true;
+    });
 
     // Act
     const result = game.movePiece(start, end);
